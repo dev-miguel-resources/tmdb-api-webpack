@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 
+// Configuciones de optimización del build con webpack para un entorno de CRA
 module.exports = {
   mode: 'production', // especificación del entorno que vamos a optimizar mediante el build
   entry: './src/index.js', // especificación de archivo de arranque o de entrada a mi app
