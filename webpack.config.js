@@ -43,9 +43,34 @@ module.exports = {
       },
     ],
   },
-  plugins: [ // plugin de soporte de webpack para entornos modernos de react (v18.0 en adelante)
+  plugins: [
+    // plugin de soporte de webpack para entornos modernos de react (v18.0 en adelante)
     new webpack.ProvidePlugin({
-       React: "react", 
+      React: 'react',
     }),
   ],
+  resolve: { // soporte de ayuda en la resolución de archivos .js, .jsx para entornos de react
+    extensions: ['.js', '.jsx'],
+  },
+  performance: {
+    hints: process.env.NODE_ENV === 'production' ? 'error' : false,
+    maxEntrypointSize: 50000, // bytes -> verificación de los recursos de js para mejorar su performance
+    maxAssetSize: 50000, // bytes -> verificación de recursos estáticos: css, images, etc....
+  },
+  devtool: 'source-map', // observable que también me entrega informes por la terminal de procesos que no sean de performance
+  devServer: {
+    proxy: {
+      // servidor de prueba que se levantará a partir del código optimizado del build
+      '/api': {
+        // la referencia interna de ruta del server
+        target: 'http://127.0.0.1:8080', // la ruta de exposición
+        changeOrigin: true, // habilitar este nuevo origen
+        secure: false, // para que no requiere certificado
+        pathRewrite: {
+          '^/api': '/api', // traspaso de app (local con el build) -> api test
+        },
+      },
+    },
+    static: path.resolve(__dirname, 'public'), // es la especificación para ya resolver el traspaso de los recursos optimizados al directorio definido en la raíz
+  },
 }
